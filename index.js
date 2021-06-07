@@ -34,6 +34,13 @@ app.route('/reset').get(
     dropCreateTable += "contato varchar(60), "
     dropCreateTable += "nascimento varchar(20) "
     dropCreateTable += ");"
+    dropCreateTable = "DROP TABLE IF EXISTS pedidos;"
+    dropCreateTable += " CREATE TABLE pedidos ("
+    dropCreateTable += "cliente varchar(150), "
+    dropCreateTable += "produto varchar(200), "
+    dropCreateTable += "endereco varchar(200), "
+    dropCreateTable += "observacoes varchar(60) "
+    dropCreateTable += ");"
 
     pool.query(dropCreateTable, (err, dbres) => {
       if (err) throw err;
@@ -59,6 +66,28 @@ app.route('/newclientes').post(
       pool.query(qry, (err, dbres) => {
         res.status(200).send("INSERT CONFIRMADO")
       });
+  }
+)
+
+// PEDIDOS
+
+
+app.route('/pedidos').get(
+  (req,res) =>{
+    let qry = "SELECT * FROM pedidos;"
+    pool.query(qry, (err, dbres) => {
+      res.status(200).json(dbres.rows)
+    });
+});
+
+app.route('/newpedidos').post(
+  (req, res) => {
+    console.log(req.body)
+    let qry = "INSERT INTO pedidos (cliente,produto,endereco,observacoes) VALUES ";
+    qry += `('${req.body.cliente}', '${req.body.produto}', '${req.body.endereco}', '${req.body.observacoes}');`
+    pool.query(qry, (err, dbres) => {
+      res.status(200).send("INSERT CONFIRMADO")
+    });
   }
 )
 
