@@ -105,7 +105,7 @@ app.route('/newpedidos').post(
 // LOGIN
 app.route('/login').post((req,res) =>{
   let qry = `SELECT * FROM usuarios WHERE usuario = '${req.body.usuario}' `;
-  qry += `AND senha = '${req.body.senha}';`
+  qry += `AND senha = '${req.body.senha}';`;
   pool.query(qry,(err, dbres) =>{
     if(err){
       res.status(500).send(err)
@@ -117,10 +117,9 @@ app.route('/login').post((req,res) =>{
           perfil: row.perfil,
           nome: row.nome
         }
-
         const token = jwt.sign(payload, JWT_SECRET)
-        const objToken = token
-        res.status(200).json(token)
+        const objToken = {token}
+        res.status(200).json(objToken)
       } else {
         res.status(401).send("Usuario ou senha inválidos")
       }
