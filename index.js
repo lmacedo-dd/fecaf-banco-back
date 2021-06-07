@@ -2,8 +2,12 @@ const express = require('express');
 const path = require('path');
 const config = require('config');
 
+const app = express();
+
+// const port = 80
 const port = process.env.PORT || config.get('server.port')
-const lancamentos = [
+app.set('port', port)
+const clientes = [
   {
     nome: 'Andre',
     endereco: 'Rua Armilda 201',
@@ -14,13 +18,16 @@ const lancamentos = [
   }
 ]
 
-const app = express();
 
-app.set('port', port)
-
-app.route('/extrato').get(
+app.route('/clientes').get(
   (req,res) =>{
-    res.status(200).json(lancamentos)
+    res.status(200).json(clientes)
+  }
+)
+
+app.route('/newclientes').get(
+  (req, res) => {
+    res.status(200).send("Solicitou add cliente")
   }
 )
 
