@@ -24,6 +24,24 @@ const pool = new pg.Pool({
 // CHAVE A SECRETA
 const JWT_SECRET = "DD341K324J23N4LJ4H24HIU32H4U34UH23UH32H324K23K22MM2M2M2M2N33"
 
+
+const filtroJwt = (req,res,proximo) =>{
+  console.log('ff')
+  if (req.headers.authorization && req.headers.authorization.substring(0, 6) === "Bearer") {
+    const token = req.headers.authorization.substring(7)
+    console.log(token)
+    jwt.verify(token, JWT_SECRET, (err,info) =>{
+      if(err){
+        res.status(403).send("Token Invalido")
+      } else {
+        proximo();
+      }
+    })
+  } else {
+    res.status(403).send("É Necessário um TOKEN!")
+  }
+}
+
 // RESET 
 app.route('/reset').get(
   (req, res) => {
@@ -64,16 +82,14 @@ app.route('/reset').get(
 
 
 // ROTAS
-app.route('/clientes').get(
-  (req,res) =>{
+app.route('/clientes').get(filtroJwt, (req, res) => {
     let qry = "SELECT * FROM clientes;"
     pool.query(qry, (err, dbres) => {
       res.status(200).json(dbres.rows)
     });
 });
 
-app.route('/newclientes').post(
-  (req, res) => {
+app.route('/newclientes').post(filtroJwt, (req, res) => {
       let qry = "INSERT INTO clientes (nome,endereco,email,cpf,contato,nascimento) VALUES ";
       qry += `('${req.body.nome}', '${req.body.endereco}', '${req.body.email}', '${req.body.cpf}', '${req.body.contato}', '${req.body.nascimento}');`
       pool.query(qry, (err, dbres) => {
@@ -83,16 +99,14 @@ app.route('/newclientes').post(
 )
 
 // PEDIDOS
-app.route('/pedidos').get(
-  (req,res) =>{
+app.route('/pedidos').get(filtroJwt, (req, res) => {
     let qry = "SELECT * FROM pedidos;"
     pool.query(qry, (err, dbres) => {
       res.status(200).json(dbres.rows)
     });
 });
 
-app.route('/newpedidos').post(
-  (req, res) => {
+app.route('/newpedidos').post(filtroJwt, (req, res) => {
     console.log(req.body)
     let qry = "INSERT INTO pedidos (cliente,produto,endereco,observacoes) VALUES ";
     qry += `('${req.body.cliente}', '${req.body.produto}', '${req.body.endereco}', '${req.body.observacoes}');`
