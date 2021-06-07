@@ -5,9 +5,12 @@ const config = require('config');
 const port = process.env.PORT || config.get('server.port')
 const lancamentos = [
   {
-    data: '2021-03-10',
-    descricao: 'pagamento',
-    valor: 2500.00
+    nome: 'Andre',
+    endereco: 'Rua Armilda 201',
+    email: 'andre@adon.com',
+    cpf: '300981900',
+    contato: '(11)95099-2211',
+    nascimento: '11/01/2001'
   }
 ]
 
